@@ -1,0 +1,10 @@
+- name: Install configuration
+  template:
+    src:  consul-server.yml.j2
+    dest: /opt/consul.d/consul-server.yml
+
+- name: Start service
+  systemd:
+    name:  consul
+    state: started
+    daemon_reload: yes

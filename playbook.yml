@@ -1,0 +1,9 @@
+- hosts: all
+  roles:
+  - common
+
+- hosts: env-shared
+  roles:
+  - glusterfs
+  - consul-server
+

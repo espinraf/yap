@@ -1,0 +1,15 @@
+yap-1 ansible_host=10.0.10.11
+yap-2 ansible_host=10.0.10.12
+yap-3 ansible_host=10.0.10.13
+yap-4 ansible_host=10.0.10.14
+yap-5 ansible_host=10.0.10.15
+
+[env-shared]
+yap-1
+yap-2
+yap-3
+
+[env-1]
+yap-4
+yap-5
+

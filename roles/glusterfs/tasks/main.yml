@@ -1,0 +1,58 @@
+- name: Create primary partion on /dev/sdb
+  parted:
+    device: /dev/sdb
+    number: 1
+    state:  present
+
+- name: Create brick directory
+  file:
+    path:  /srv/brick
+    state: directory
+
+- name: Create XFS filesystem on /dev/sdb1
+  filesystem:
+    dev:    /dev/sdb1
+    fstype: xfs
+
+- name: Open TCP ports 24007-24009
+  firewalld:
+    port:      24007-24009/tcp
+    immediate: true
+    permanent: true
+    state:     enabled
+
+- name: Open TCP port 111  
+  firewalld:
+    port: 111/tcp
+    immediate: true
+    permanent: true
+    state:     enabled
+
+- name: Open UDB port 111
+  firewalld:
+    port:      111/udp
+    immediate: true
+    permanent: true
+    state:     enabled
+
+- name: Enable RPM repo
+  yum:
+    name:  centos-release-gluster
+    state: present
+
+- name: Install
+  yum:
+    name:  glusterfs-server
+    state: present
+
+- name: Start and enable service
+  systemd:
+    state:   started
+    enabled: true
+    name:    glusterd
+
+- name: Probe peers
+  shell:      "gluster peer probe {{ item }}"
+  with_items: "{{ play_hosts }}"
+  when:       "inventory_hostname == play_hosts[0]"
+

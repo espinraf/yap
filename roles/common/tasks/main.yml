@@ -1,0 +1,34 @@
+- name: Generate /etc/hosts
+  template:
+    src:  hosts.j2
+    dest: /etc/hosts
+
+- name: Update packages
+  yum:
+    name:  '*'
+    state: present
+
+- name: Install packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - java-1.8.0-openjdk
+    - unzip
+
+- name: Transfer consul binary
+  unarchive:
+    src:        https://releases.hashicorp.com/consul/1.2.0/consul_1.2.0_linux_amd64.zip
+    dest:       /opt
+    remote_src: yes
+
+- name: Create consul configuration directory
+  file:
+    path:  /opt/consul.d
+    state: directory
+
+- name: Install consul service
+  template:
+    src:  consul.service.j2
+    dest: /etc/systemd/system/consul.service
+
